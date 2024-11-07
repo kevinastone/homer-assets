@@ -4,3 +4,4 @@ WORKDIR /usr/share/nginx/html
 
 ADD icons /usr/share/nginx/html/icons
 ADD theme /usr/share/nginx/html/theme
+ADD custom /usr/share/nginx/html/custom
