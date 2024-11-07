@@ -1,0 +1,6 @@
+[submodule "icons"]
+	path = icons
+	url = https://github.com/walkxcode/dashboard-icons.git
+[submodule "theme"]
+	path = theme
+	url = https://github.com/mrpbennett/catppuccin-homer.git
