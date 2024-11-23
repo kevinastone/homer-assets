@@ -3,5 +3,4 @@
 	url = https://github.com/walkxcode/dashboard-icons.git
 [submodule "theme"]
 	path = theme
-	url = https://github.com/kevinastone/catppuccin-homer.git
-	branch = background
+	url = https://github.com/mrpbennett/catppuccin-homer.git
