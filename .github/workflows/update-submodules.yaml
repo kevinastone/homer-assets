@@ -3,12 +3,13 @@ name: Update Submodules
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Optional: Run automatically every day at midnight UTC
-  # schedule:
-  #   - cron: "0 0 * * *"
+  # Run automatically every day at midnight UTC
+  schedule:
+    - cron: "0 0 * * *"
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update-submodules:
@@ -34,14 +35,16 @@ jobs:
         run: |
           git submodule update --init --recursive --remote
 
-      # 4. Check for changes and commit
-      - name: Commit and push changes
-        run: |
-          if [[ -n $(git status -s) ]]; then
-            echo "Changes detected in submodules. Committing..."
-            git add .
-            git commit -m "chore: update submodules to latest"
-            git push
-          else
-            echo "No changes detected. Submodules are up to date."
-          fi
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore: update submodules to latest"
+          title: "chore: update submodules"
+          body: "This PR updates submodules to the latest versions from their remotes."
+
+          # This is the key setting.
+          # As long as this branch name stays the same, it updates the existing PR.
+          branch: chore/update-submodules
+
+          # Optional: automatically delete the branch after the PR is merged
+          delete-branch: true
