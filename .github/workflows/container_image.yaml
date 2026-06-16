@@ -1,7 +1,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Container Image
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -16,12 +19,24 @@ jobs:
         with:
           submodules: recursive
 
-      # Generate docker tags
-      - name: Docker meta
-        id: meta
+      # Generate docker tags for Assets
+      - name: Docker meta for Assets
+        id: meta-assets
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            type=raw,value=${{ github.sha }}
+
+      # Generate docker tags for Nginx
+      - name: Docker meta for Nginx
+        id: meta-nginx
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-nginx
 
       - name: Set up Docker Buildx
         id: buildx
@@ -34,12 +49,23 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push Assets
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          target: assets
+          push: true
+          tags: ${{ steps.meta-assets.outputs.tags }}
+          labels: ${{ steps.meta-assets.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Nginx
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta-nginx.outputs.tags }}
+          labels: ${{ steps.meta-nginx.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
