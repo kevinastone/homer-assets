@@ -25,11 +25,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha
-            type=raw,value=${{ github.sha }}
 
       # Generate docker tags for Nginx
       - name: Docker meta for Nginx
