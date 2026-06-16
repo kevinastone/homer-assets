@@ -22,14 +22,14 @@ jobs:
       # Generate docker tags for Assets
       - name: Docker meta for Assets
         id: meta-assets
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}
 
       # Generate docker tags for Nginx
       - name: Docker meta for Nginx
         id: meta-nginx
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}-nginx
 
